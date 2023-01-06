@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const Router = require('./src/Router/index')
@@ -23,7 +24,8 @@ app.use((err,req,res,next)=>{
 })
 
 
+const PORT = process.env.PORT || 5000
 
-app.listen(5000, () =>{
+app.listen(PORT, () =>{
     console.log("server running in http://localhost:5000")
 })
