@@ -5,6 +5,7 @@ const router = express.Router()
 
 router
     .get("/", controllersProducts.getProducts)
+    .get("/:id", controllersProducts.getProductsById)
     .post("/", upload.single("image"), controllersProducts.createProduct)
     .put("/:id",upload.single("image"), controllersProducts.updateProduct)
     .delete("/:id", controllersProducts.deleteProducts)

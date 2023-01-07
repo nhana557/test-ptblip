@@ -1,9 +1,12 @@
-const response = (res, result, message, status) =>{
+const response = (res, result, message, status, pagination) =>{
     const resultRespon = {}
     resultRespon.status = 'success'
     resultRespon.statusCode = status || 200
     resultRespon.message = message || null
     resultRespon.data = result
+    if(pagination){
+        resultRespon.pagination = pagination
+    }
     res.status(status).json(resultRespon)
 }
 

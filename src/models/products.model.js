@@ -1,8 +1,11 @@
 const db =require('../config/db')
 
 const model = {
-    getProducts : () =>{
-        return db.query('SELECT * FROM products')
+    getProducts : ({limit, offset, sort,sortby, querySearch}) =>{
+        return db.query(`SELECT * FROM products ${querySearch} ORDER BY ${sortby} ${sort} LIMIT ${limit} OFFSET ${offset}`)
+    },
+    getProductsById : (id) =>{
+        return db.query('SELECT * FROM products WHERE id=$1', [id])
     },
     create: ({id, name, price, description, image}) =>{
         return db.query(
@@ -13,6 +16,9 @@ const model = {
     },
     deleteProducts: (id) =>{
         return db.query("DELETE FROM products WHERE id=$1", [id])
+    },
+    countData : () =>{
+        return db.query('SELECT COUNT(*) FROM products')
     }
 }
 

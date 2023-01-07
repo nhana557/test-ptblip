@@ -5,8 +5,46 @@ const common = require('../helper/common')
 const controllersProducts = {
     getProducts: async(req, res) =>{
         try {
-            const result = await model.getProducts()
-            common.response(res, result.rows, "getAllProducts", 201)
+            const page = Number(req.query.page) || 1
+            const limit = Number(req.query.limit) || 5;
+            const offset = (page - 1) * limit
+            const searchby = req.query.searchby || 'name'
+            const sortby = req.query.sortby || 'name'
+            const sort = req.query.sort || "ASC"
+            const {rows: [count]} = await model.countData()
+
+            const search = req.query.search;
+            let querySearch = '';
+            if (search) {
+                querySearch =  `where ${searchby} ILIKE '%${search}%'` ;
+            }
+            const result={
+                limit,
+                offset,
+                sort,
+                sortby,
+                querySearch
+            
+            }
+            const data = await model.getProducts(result)
+            const totalData = parseInt(count.count)
+            const totalPage = Math.ceil(totalData/limit)
+            const pagination ={     
+                    currentPage : page,
+                    limit:limit,
+                    totalData:totalData,
+                    totalPage:totalPage
+            }
+            common.response(res, data.rows, "getAllProducts", 201, pagination)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    getProductsById: async(req, res) =>{
+        try {
+            const { id } = req.params;
+            const result = await model.getProductsById(id)
+            common.response(res, result.rows, "products detail", 201)
         } catch (error) {
             console.log(error)
         }
