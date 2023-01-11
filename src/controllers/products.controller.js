@@ -3,7 +3,7 @@ const { v4 : uuid } =require('uuid')
 const cloudinary = require('../middleware/cloudinary')
 const common = require('../helper/common')
 const controllersProducts = {
-    getProducts: async(req, res) =>{
+    getProducts: async(req, res, next) =>{
         try {
             const page = Number(req.query.page) || 1
             const limit = Number(req.query.limit) || 5;
@@ -28,7 +28,7 @@ const controllersProducts = {
             }
             const data = await model.getProducts(result)
             const totalData = parseInt(count.count)
-            const totalPage = Math.ceil(totalData/limit)
+            const totalPage = Math.ceil(totalData / limit)
             const pagination ={     
                     currentPage : page,
                     limit:limit,
@@ -37,24 +37,25 @@ const controllersProducts = {
             }
             common.response(res, data.rows, "getAllProducts", 201, pagination)
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    getProductsById: async(req, res) =>{
+    getProductsById: async(req, res, next) =>{
         try {
             const { id } = req.params;
             const result = await model.getProductsById(id)
             common.response(res, result.rows, "products detail", 201)
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     },
-    createProduct : async(req, res) =>{
+    createProduct : async(req, res, next) =>{
         try {
             const { name, price, description } = req.body;
             const file = req.file.path;
             const result = await cloudinary.uploader.upload(file)
-            const image = result.secure_url
+            console.log(result);
+            const image = result.url
             const data = {
                 id: uuid(),
                 name,
@@ -65,10 +66,11 @@ const controllersProducts = {
             await model.create(data)
             common.response(res, data, "Created", 201)
         } catch (error) {
-            console.log(error)
+            next(error)
+
         }
     },
-    updateProduct : async(req, res) =>{
+    updateProduct : async(req, res, next) =>{
         try {
             const { name, price, description } = req.body;
             const { id } = req.params;
@@ -85,16 +87,18 @@ const controllersProducts = {
             await model.update(data)
             common.response(res, data, "Updated", 201)
         } catch (error) {
-            console.log(error)
+            next(error)
+
         }
     },
-    deleteProducts: async(req, res) =>{
+    deleteProducts: async(req, res, next) =>{
         try {
             const { id } = req.params;
             await model.deleteProducts(id)
             common.response(res, null, "deleted", 201)
         } catch (error) {
-            console.log(error)
+            next(error)
+
         }
     }
 }

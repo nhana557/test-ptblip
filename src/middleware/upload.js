@@ -5,9 +5,6 @@ const createError = require('http-errors')
 
 
 const fileStorage = multer.diskStorage({
-        // destination: (req, file, cb) =>{
-        //   cb(null, `./tmp/`)
-        // },
         filename: (req, file, cb) =>{
             const name = crypto.randomBytes(30).toString('hex');
             const ext = path.extname(file.originalname);
@@ -24,7 +21,7 @@ const fileFiltered = (req, file, cb) => {
       cb(null, true);
     } catch (error) {
         console.log(error)
-      cb(new createError(400, error))
+      cb(new createError(404, error))
     }
   }
   
