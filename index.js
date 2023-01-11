@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const Router = require('./src/Router/index')
+const createError = require('http-errors')
 
 const app = express()
 
@@ -9,6 +10,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 app.use(Router)
+app.all("*", (req, res, next) => {
+    next(new createError.NotFound())
+})
 
 app.use((err,req,res,next)=>{
     const messageError = err.message || "internal server error"
