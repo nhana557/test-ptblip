@@ -12,7 +12,6 @@ const controllersProducts = {
             const sortby = req.query.sortby || 'name'
             const sort = req.query.sort || "ASC"
             const {rows: [count]} = await model.countData()
-
             const search = req.query.search;
             let querySearch = '';
             if (search) {
@@ -26,15 +25,16 @@ const controllersProducts = {
                 querySearch
             
             }
-            const data = await model.getProducts(result)
             const totalData = parseInt(count.count)
             const totalPage = Math.ceil(totalData / limit)
-            const pagination ={     
-                    currentPage : page,
-                    limit:limit,
-                    totalData:totalData,
-                    totalPage:totalPage
+            const pagination = {     
+                currentPage : page,
+                limit:limit,
+                totalData:totalData,
+                totalPage:totalPage
             }
+            
+            const data = await model.getProducts(result)
             common.response(res, data.rows, "getAllProducts", 201, pagination)
         } catch (error) {
             next(error)
